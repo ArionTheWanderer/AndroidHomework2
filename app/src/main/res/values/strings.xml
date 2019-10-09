@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">Android</string>
+    <string name="app_name">LoginApplication</string>
+    <string name="welcome">Welcome to application</string>
+    <string name="login">Login</string>
+    <string name="email">Enter your e-mail</string>
+    <string name="password">Enter your password</string>
+    <string name="reset_pass">Reset password</string>
+    <string name="new_pass">Enter new password</string>
+    <string name="validate_password">Wrong password!</string>
+    <string name="inside">You are authorized!</string>
+
 </resources>
