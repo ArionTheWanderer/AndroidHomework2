@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
     fun login(view: View) {
         val pass_to_string: String? = pass.text.toString()
         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
-        if (pass_to_string.equals(PasswordRepository.password)) {
+        if (pass_to_string == PasswordRepository.password) {
             val intent = Intent(this,HomeActivity::class.java)
             progressBar.setVisibility(VISIBLE)
             startActivity(intent)
