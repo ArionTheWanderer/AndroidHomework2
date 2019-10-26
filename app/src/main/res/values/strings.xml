@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">Android</string>
+    <string name="app_name">Implicit intent</string>
+    <string name="main_enter_data">Enter your data into the field:</string>
+    <string name="main_data">Your data</string>
+    <string name="main_submit">Submit</string>
+    <string name="subsidiary_return">Return</string>
 </resources>
