@@ -2,22 +2,21 @@ package com.example.android
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     lateinit var etName: EditText
-    val REQUEST_CODE_SHARE: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        etName = findViewById(R.id.et_main_data)
+        etName = et_main_data
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -40,4 +39,7 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(sendIntent, REQUEST_CODE_SHARE)
     }
 
+    companion object {
+        private const val REQUEST_CODE_SHARE: Int = 1
+    }
 }
