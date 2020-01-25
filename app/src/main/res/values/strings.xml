@@ -1,3 +1,31 @@
 <resources>
-    <string name="app_name">Android</string>
+    <string name="app_name">Fragments</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_nav">NavActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="nextFragment">Next fragment</string>
+    <string name="welcome">Welcome! You are in the first fragment</string>
+    <string name="meAfterSession">Я после сессии</string>
+    <string name="meOnHolidays">Я на каникулах</string>
+    <string name="descForImage">description</string>
+    <string name="recept">тоник желательно кислый добавляем 2 к 1 джин пару кубиков льда и все это джин тоник</string>
+    <string name="report">If you wanna оставить report press эту кнопку</string>
+    <string name="report_text">Напишите ваше пожелание/отзыв в поле ниже:</string>
+    <string name="report_hint">Ваш отзыв</string>
+    <string name="author_hint">Ваше имя</string>
+    <string name="email_hint">Ваш e-mail</string>
+    <string name="report_button">Send report</string>
+    <string name="report_preview">Ваш отзыв был отправлен. Благодарим за содействие!</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_prikoli">Prikoli</string>
+    <string name="menu_recept">Recept</string>
+    <string name="menu_report">Report</string>
+    <string name="menu_receive">Receive</string>
+    <string name="menu_send">Send</string>
 </resources>
