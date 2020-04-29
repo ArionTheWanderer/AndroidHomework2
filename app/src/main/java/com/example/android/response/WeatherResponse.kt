@@ -88,5 +88,5 @@ data class Wind(
     @SerializedName("gust")
     var gust: Int,
     @SerializedName("speed")
-    var speed: Int
+    var speed: Double
 )
