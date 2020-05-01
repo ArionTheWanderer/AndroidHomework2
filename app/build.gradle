@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'io.gitlab.arturbosch.detekt'
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -59,4 +61,18 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+}
+
+detekt {
+    failFast = true // fail build on any finding
+    buildUponDefaultConfig = true // preconfigure defaults
+    config = files("$rootDir/config/detekt/detekt.yml")
+    // point to your custom config defining rules to run, overwriting default behavior
+
+    reports {
+        html.enabled = true // observe findings in your browser with structure and code snippets
+        xml.enabled = false // checkstyle like format mainly for integrations like Jenkins
+        txt.enabled = false
+        // similar to the console output, contains issue signature to manually edit baseline files
+    }
 }
