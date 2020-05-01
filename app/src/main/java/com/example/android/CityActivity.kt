@@ -5,6 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.android.TempConstants.minus10
+import com.example.android.TempConstants.minus30
+import com.example.android.TempConstants.plus10
+import com.example.android.TempConstants.plus30
 import com.example.android.recycler_city.CityDetAdapter
 import com.example.android.recycler_city.DataPair
 import com.example.android.response.WeatherResponse
@@ -14,6 +18,7 @@ import java.util.*
 
 class CityActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
+    @Suppress("LateinitUsage")
     private lateinit var service: WeatherService
 
     companion object {
@@ -50,13 +55,13 @@ class CityActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 .load(picUrl)
                 .into(weather_pic)
             val temp = response.main.temp.toInt()
-            var colorTemp = 0;
+            var colorTemp = 0
             when {
-                temp < -30 -> colorTemp = R.color.tempVeryCold
-                temp < -10 && temp >= -30 -> colorTemp = R.color.tempCold
-                temp <= 10 && temp >= -10 -> colorTemp = R.color.tempCool
-                temp in 11..30 -> colorTemp = R.color.tempWarm
-                temp > 30 -> colorTemp = R.color.tempHot
+                temp < minus30 -> colorTemp = R.color.tempVeryCold
+                temp in minus30 until minus10 -> colorTemp = R.color.tempCold
+                temp in minus10..plus10 -> colorTemp = R.color.tempCool
+                temp in plus10 + 1 until plus30 -> colorTemp = R.color.tempWarm
+                temp > plus30 -> colorTemp = R.color.tempHot
             }
 
             temp_detailed_tv.setTextColor(getColor(colorTemp))
@@ -65,20 +70,21 @@ class CityActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     }
 
     private fun setRecInfo(response: WeatherResponse) {
-        var list: LinkedList<DataPair> = LinkedList()
+        val list: LinkedList<DataPair> = LinkedList()
         list.add(DataPair("Pressure", response.main.pressure.toString() + " hpa"))
         list.add(DataPair("Wind speed", response.wind.speed.toString() + " m/s"))
         var windOrientation = ""
-        val x = response.wind.deg
+        val deg = response.wind.deg
         when {
-            x < 30 || x >= 330 -> windOrientation = "North"
-            x < 60 -> windOrientation = "Northeast"
-            x < 120 -> windOrientation = "East"
-            x < 150 -> windOrientation = "Southeast"
-            x < 210 -> windOrientation = "South"
-            x < 240 -> windOrientation = "Southwest"
-            x < 300 -> windOrientation = "West"
-            x < 330 -> windOrientation = "Northwest"
+            deg < WindConstants.thirty || deg >= WindConstants.threeHundred30 -> windOrientation =
+                "North"
+            deg < WindConstants.sixty -> windOrientation = "Northeast"
+            deg < WindConstants.hundred20 -> windOrientation = "East"
+            deg < WindConstants.hundred50 -> windOrientation = "Southeast"
+            deg < WindConstants.twoHundred10 -> windOrientation = "South"
+            deg < WindConstants.twoHundred40 -> windOrientation = "Southwest"
+            deg < WindConstants.threeHundred -> windOrientation = "West"
+            deg < WindConstants.threeHundred30 -> windOrientation = "Northwest"
         }
         list.add(DataPair("Wind orientation", windOrientation))
         list.add(DataPair("Humidity", response.main.humidity.toString() + "%"))

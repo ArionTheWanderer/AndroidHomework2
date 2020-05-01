@@ -29,8 +29,10 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         private var wayLongitude: Double = 0.0
     }
 
+    @Suppress("LateinitUsage")
     private lateinit var service: WeatherService
 
+    @Suppress("LateinitUsage")
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,27 +63,31 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             )
         } else {
             setLocation()
-            launch {
-                delay(1000)
-                val response = withContext(Dispatchers.IO) {
-                    service.weatherInNearbyCities(
-                        wayLongitude,
-                        wayLatitude,
-                        20
-                    )
-                }
-                if ((response.body()?.list?.size) != 1) {
-                    rv_cities.adapter =
-                        CityAdapter(response.body()?.list ?: LinkedList<WeatherResponse>())
-                        { weatherResponse ->
-                            startActivity(
-                                CityActivity.createIntent(
-                                    this@MainActivity,
-                                    weatherResponse.id
-                                )
+            setupRecyclerWithCities()
+        }
+    }
+
+    private fun setupRecyclerWithCities() {
+        launch {
+            delay(OtherConstants.delay)
+            val response = withContext(Dispatchers.IO) {
+                service.weatherInNearbyCities(
+                    wayLongitude,
+                    wayLatitude,
+                    OtherConstants.numberOfCities
+                )
+            }
+            if (response.body()?.list?.size != 1) {
+                rv_cities.adapter =
+                    CityAdapter(response.body()?.list ?: LinkedList<WeatherResponse>())
+                    { weatherResponse ->
+                        startActivity(
+                            CityActivity.createIntent(
+                                this@MainActivity,
+                                weatherResponse.id
                             )
-                        }
-                }
+                        )
+                    }
             }
         }
     }
@@ -103,30 +109,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         when (requestCode) {
             MY_PERMISSIONS_REQUEST_LOCATION -> {
                 // If request is cancelled, the result arrays are empty.
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     setLocation()
-                    launch {
-                        delay(1000)
-                        val response = withContext(Dispatchers.IO) {
-                            service.weatherInNearbyCities(
-                                wayLongitude,
-                                wayLatitude,
-                                20
-                            )
-                        }
-                        if (response.isSuccessful) {
-                            rv_cities.adapter =
-                                CityAdapter(response.body()?.list ?: LinkedList<WeatherResponse>())
-                                { weatherResponse ->
-                                    startActivity(
-                                        CityActivity.createIntent(
-                                            this@MainActivity,
-                                            weatherResponse.id
-                                        )
-                                    )
-                                }
-                        }
-                    }
+                    setupRecyclerWithCities()
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
                 } else {
@@ -140,9 +125,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 }
                 return
             }
-            else -> {
-                return
-            }
+            else -> return
         }
     }
 
@@ -182,7 +165,5 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         return false
     }
 
-    override fun onQueryTextChange(newText: String?): Boolean {
-        return true
-    }
+    override fun onQueryTextChange(newText: String?): Boolean = true
 }
