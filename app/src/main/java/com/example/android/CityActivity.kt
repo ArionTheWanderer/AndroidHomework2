@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.bumptech.glide.Glide
 import com.example.android.TempConstants.minus10
 import com.example.android.TempConstants.minus30
 import com.example.android.TempConstants.plus10
@@ -12,14 +11,21 @@ import com.example.android.TempConstants.plus30
 import com.example.android.recycler_city.CityDetAdapter
 import com.example.android.recycler_city.DataPair
 import com.example.android.response.WeatherResponse
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_city.*
 import kotlinx.coroutines.*
 import java.util.*
+import javax.inject.Inject
 
 class CityActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
+    @Inject
     @Suppress("LateinitUsage")
-    private lateinit var service: WeatherService
+    lateinit var service: WeatherService
+
+    @Inject
+    @Suppress("LateinitUsage")
+    lateinit var picasso: Picasso
 
     companion object {
         const val CITY_ID = "cityId"
@@ -34,10 +40,11 @@ class CityActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        MyApp().plusSscComponent(this).inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_city)
 
-        service = ApiFactory.weatherService
+        /*service = ApiFactory.weatherService*/
 
         launch {
             val response = withContext(Dispatchers.IO) {
@@ -50,10 +57,11 @@ class CityActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             feels_like_detailed_tv.text = response.main.feelsLike.toString() + " ℃"
 
             val picUrl = "https://openweathermap.org/img/wn/${response.weathers[0].icon}@2x.png"
-            Glide
+            /*Glide
                 .with(this@CityActivity)
                 .load(picUrl)
-                .into(weather_pic)
+                .into(weather_pic)*/
+            picasso.load(picUrl).into(weather_pic)
             val temp = response.main.temp.toInt()
             var colorTemp = 0
             when {
@@ -95,4 +103,8 @@ class CityActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         city_rec.adapter = CityDetAdapter(list)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        MyApp().clearSSCComponent()
+    }
 }

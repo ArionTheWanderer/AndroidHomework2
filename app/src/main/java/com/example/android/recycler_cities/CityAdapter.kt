@@ -16,13 +16,4 @@ class CityAdapter(
 
     override fun onBindViewHolder(holder: CityItemHolder, position: Int) =
         holder.bind(dataSource[position])
-
-    /*fun add(city: WeatherResponse) {
-        val temp = dataSource.toMutableList()
-        temp.add(4, book)
-        temp.add(4, book.apply { title += " 2"})
-        temp.add(4, book.apply { title += " 3"})
-        dataSource = temp
-        notifyItemRangeChanged(4, 4)
-    }*/
 }

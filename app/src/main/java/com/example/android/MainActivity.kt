@@ -14,11 +14,11 @@ import androidx.core.content.ContextCompat
 import com.example.android.recycler_cities.CityAdapter
 import com.example.android.response.WeatherResponse
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
 import java.util.*
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     SearchView.OnQueryTextListener {
@@ -29,22 +29,25 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         private var wayLongitude: Double = 0.0
     }
 
+    @Inject
     @Suppress("LateinitUsage")
-    private lateinit var service: WeatherService
+    lateinit var service: WeatherService
 
+    @Inject
     @Suppress("LateinitUsage")
-    private lateinit var mFusedLocationClient: FusedLocationProviderClient
+    lateinit var mFusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        MyApp().plusFscComponent(this).inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         (toolbar as Toolbar).also {
             setSupportActionBar(it)
         }
 
-        service = ApiFactory.weatherService
+        /*service = ApiFactory.weatherService
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)*/
 
         if (ContextCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_COARSE_LOCATION
@@ -141,6 +144,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     override fun onDestroy() {
         super.onDestroy()
         coroutineContext.cancelChildren()
+        MyApp().clearFSCComponent()
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
