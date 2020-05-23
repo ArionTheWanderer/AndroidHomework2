@@ -44,8 +44,6 @@ class CityActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_city)
 
-        /*service = ApiFactory.weatherService*/
-
         launch {
             val response = withContext(Dispatchers.IO) {
                 service.weatherById(intent.extras?.getInt(CITY_ID) ?: 0)
@@ -57,10 +55,6 @@ class CityActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             feels_like_detailed_tv.text = response.main.feelsLike.toString() + " ℃"
 
             val picUrl = "https://openweathermap.org/img/wn/${response.weathers[0].icon}@2x.png"
-            /*Glide
-                .with(this@CityActivity)
-                .load(picUrl)
-                .into(weather_pic)*/
             picasso.load(picUrl).into(weather_pic)
             val temp = response.main.temp.toInt()
             var colorTemp = 0

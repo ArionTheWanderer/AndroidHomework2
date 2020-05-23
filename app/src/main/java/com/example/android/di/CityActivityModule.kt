@@ -11,5 +11,5 @@ class CityActivityModule(val cityActivity: CityActivity) {
     @Provides
     @SSCScope
     fun getPicasso(): Picasso =
-        Picasso.Builder(cityActivity).build();
+        Picasso.Builder(cityActivity).build()
 }

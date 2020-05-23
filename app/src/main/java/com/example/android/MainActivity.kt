@@ -45,10 +45,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             setSupportActionBar(it)
         }
 
-        /*service = ApiFactory.weatherService
-
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)*/
-
         if (ContextCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
