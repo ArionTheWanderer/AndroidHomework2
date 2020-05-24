@@ -4,7 +4,7 @@ import com.example.android.MainActivity
 import com.example.android.di.scopes.FSCScope
 import dagger.Subcomponent
 
-@Subcomponent(modules = [MainActivityModule::class])
+@Subcomponent(modules = [MainActivityModule::class, MainViewModelModule::class, ViewModelFactoryModule::class])
 @FSCScope
 interface FSCComponent {
     fun inject(mainActivity: MainActivity)

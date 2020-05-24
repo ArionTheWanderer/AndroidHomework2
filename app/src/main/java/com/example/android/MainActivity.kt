@@ -11,9 +11,10 @@ import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import com.example.android.recycler_cities.CityAdapter
 import com.example.android.response.WeatherResponse
-import com.google.android.gms.location.FusedLocationProviderClient
+import com.example.android.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
@@ -25,26 +26,31 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
     companion object {
         const val MY_PERMISSIONS_REQUEST_LOCATION: Int = 1234
-        private var wayLatitude: Double = 0.0
-        private var wayLongitude: Double = 0.0
     }
+
+    @Inject
+    @Suppress("LateinitUsage")
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Suppress("LateinitUsage")
+    lateinit var mainViewModel: MainViewModel
 
     @Inject
     @Suppress("LateinitUsage")
     lateinit var service: WeatherService
 
-    @Inject
-    @Suppress("LateinitUsage")
-    lateinit var mFusedLocationClient: FusedLocationProviderClient
-
     override fun onCreate(savedInstanceState: Bundle?) {
         MyApp().plusFscComponent(this).inject(this)
+        mainViewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         (toolbar as Toolbar).also {
             setSupportActionBar(it)
         }
+        checkPermissions()
+    }
 
+    private fun checkPermissions() {
         if (ContextCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
@@ -61,43 +67,23 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 ), MY_PERMISSIONS_REQUEST_LOCATION
             )
         } else {
-            setLocation()
-            setupRecyclerWithCities()
+            observeCities()
         }
     }
 
-    private fun setupRecyclerWithCities() {
-        launch {
-            delay(OtherConstants.delay)
-            val response = withContext(Dispatchers.IO) {
-                service.weatherInNearbyCities(
-                    wayLongitude,
-                    wayLatitude,
-                    OtherConstants.numberOfCities
-                )
-            }
-            if (response.body()?.list?.size != 1) {
-                rv_cities.adapter =
-                    CityAdapter(response.body()?.list ?: LinkedList<WeatherResponse>())
-                    { weatherResponse ->
-                        startActivity(
-                            CityActivity.createIntent(
-                                this@MainActivity,
-                                weatherResponse.id
-                            )
+    private fun observeCities() {
+        mainViewModel.citiesData.observe(this, androidx.lifecycle.Observer {
+            rv_cities.adapter =
+                CityAdapter(it ?: LinkedList<WeatherResponse>()) { weatherResponse ->
+                    startActivity(
+                        CityActivity.createIntent(
+                            this@MainActivity,
+                            weatherResponse.id
                         )
-                    }
-            }
-        }
-    }
-
-    private fun setLocation() {
-        mFusedLocationClient.lastLocation.addOnSuccessListener(this) {
-            it?.let {
-                wayLatitude = it.latitude
-                wayLongitude = it.longitude
-            }
-        }
+                    )
+                }
+        })
+        mainViewModel.getNearlyCities()
     }
 
     override fun onRequestPermissionsResult(
@@ -109,8 +95,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             MY_PERMISSIONS_REQUEST_LOCATION -> {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    setLocation()
-                    setupRecyclerWithCities()
+                    observeCities()
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
                 } else {

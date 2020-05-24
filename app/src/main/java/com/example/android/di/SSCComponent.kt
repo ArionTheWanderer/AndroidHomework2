@@ -5,7 +5,7 @@ import com.example.android.di.scopes.SSCScope
 import com.squareup.picasso.Picasso
 import dagger.Subcomponent
 
-@Subcomponent(modules = [CityActivityModule::class])
+@Subcomponent(modules = [CityActivityModule::class, CityViewModelModule::class, ViewModelFactoryModule::class])
 @SSCScope
 interface SSCComponent {
     fun inject(cityActivity: CityActivity)
