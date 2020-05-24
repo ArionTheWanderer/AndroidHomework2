@@ -66,9 +66,8 @@ class CityViewModel @Inject constructor() : ViewModel(), CoroutineScope by MainS
         list.add(DataPair("Clouds", response.weathers[0].description))
         list.add(DataPair("Max temperature", response.main.tempMax.toString() + " ℃"))
         list.add(DataPair("Min temperature", response.main.tempMin.toString() + " ℃"))
-
         val picUrl = "https://openweathermap.org/img/wn/${response.weathers[0].icon}@2x.png"
-        val picture: ImageView = ImageView(context)
+        val picture = ImageView(context)
         picasso.load(picUrl).into(picture)
         val temp = response.main.temp.toInt()
         var colorTempLocal = 0
@@ -81,6 +80,15 @@ class CityViewModel @Inject constructor() : ViewModel(), CoroutineScope by MainS
                 R.color.tempWarm
             temp > TempConstants.plus30 -> colorTempLocal = R.color.tempHot
         }
+        postValues(picture, colorTempLocal, list, response)
+    }
+
+    fun postValues(
+        picture: ImageView,
+        colorTempLocal: Int,
+        list: LinkedList<DataPair>,
+        response: WeatherResponse
+    ) {
         weatherPic.postValue(picture)
         colorTemp.postValue(colorTempLocal)
         recData.postValue(list)
